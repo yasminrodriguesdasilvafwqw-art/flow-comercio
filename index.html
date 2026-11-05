@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow-comercio | Pedidos Online</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f5ef;
+  color: #252a25;
+}
+
+header {
+  background: #245b43;
+  color: white;
+  text-align: center;
+  padding: 25px 15px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+header p {
+  margin-bottom: 0;
+}
+
+.hero {
+  background: #d9f078;
+  text-align: center;
+  padding: 35px 15px;
+}
+
+main {
+  width: 92%;
+  max-width: 1000px;
+  margin: 25px auto;
+}
+
+h2 {
+  color: #245b43;
+}
+
+.produtos {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit, minmax(210px, 1fr)
+  );
+  gap: 18px;
+}
+
+.produto {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px #00000012;
+}
+
+.emoji {
+  font-size: 55px;
+}
+
+.produto h3 {
+  margin-bottom: 8px;
+}
+
+.preco {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+button {
+  background: #245b43;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  padding: 11px 14px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #173d2c;
+}
+
+.carrinho {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-top: 35px;
+}
+
+.item-carrinho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.item-carrinho button {
+  margin: 3px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.botao-finalizar {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  background: #e9a14b;
+  color: #20231f;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.botao-finalizar:hover {
+  background: #d88b32;
+}
+
+.info {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+footer {
+  background: #245b43;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 35px;
+}
+
+@media (max-width: 500px) {
+  main {
+    width: 94%;
+  }
+
+  .carrinho {
+    padding: 16px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🍔 Flow-comercio</h1>
+  <p>Seu lanche favorito, sem complicação!</p>
+</header>
+
+<section class="hero">
+  <h2>Deu fome? A gente resolve!</h2>
+  <p>Escolha seus produtos e monte seu pedido.</p>
+  <a href="#cardapio">Ver cardápio ↓</a>
+</section>
+
+<main>
+
+  <section id="cardapio">
+    <h2>🍕 Nosso cardápio</h2>
+    <p>Confira nossas opções e adicione ao carrinho.</p>
+    <div id="produtos" class="produtos"></div>
+  </section>
+
+  <section class="carrinho" id="carrinho">
+    <h2>🛒 Seu carrinho</h2>
+
+    <div id="itens-carrinho">
+      Seu carrinho está vazio.
+    </div>
+
+    <h3>Total: <span id="total">R$ 0,00</span></h3>
+
+    <form id="form-pedido">
+      <h2>📦 Dados para entrega</h2>
+
+      <label for="nome">Nome completo</label>
+      <input id="nome" name="nome"
+        maxlength="100" required>
+
+      <label for="telefone">Telefone</label>
+      <input id="telefone" name="telefone"
+        type="tel" maxlength="25" required
+        placeholder="DDD + número">
+
+      <label for="endereco">Endereço completo</label>
+      <textarea id="endereco" name="endereco"
+        maxlength="300" required
+        placeholder="Rua, número, bairro e complemento"></textarea>
+
+      <label for="pagamento">Forma de pagamento</label>
+      <select id="pagamento" name="pagamento" required>
+        <option value="">Selecione</option>
+        <option value="Pix">Pix</option>
+        <option value="Dinheiro">Dinheiro</option>
+        <option value="Cartão na entrega">Cartão na entrega</option>
+      </select>
+
+      <button class="botao-finalizar" type="submit">
+        Finalizar pedido
+      </button>
+
+      <p class="info">
+        Este é um projeto demonstrativo. O pedido será
+        gerado como arquivo de texto. Nenhum pagamento
+        é realizado pelo site.
+      </p>
+    </form>
+  </section>
+
+</main>
+
+<footer>
+  <p>Flow-comercio © 2026</p>
+  <p>Seu pedido, sem complicação!</p>
+</footer>
+
+<script>
+"use strict";
+
+const produtos = [
+  {
+    id: 1,
+    nome: "Hambúrguer clássico",
+    descricao: "Pão, hambúrguer, queijo e molho especial.",
+    preco: 22.90,
+    emoji: "🍔"
+  },
+  {
+    id: 2,
+    nome: "Hambúrguer duplo",
+    descricao: "Dois hambúrgueres e muito queijo.",
+    preco: 29.90,
+    emoji: "🍔"
+  },
+  {
+    id: 3,
+    nome: "Pizza de calabresa",
+    descricao: "Calabresa, queijo, cebola e molho.",
+    preco: 39.90,
+    emoji: "🍕"
+  },
+  {
+    id: 4,
+    nome: "Pizza quatro queijos",
+    descricao: "Uma combinação cremosa de queijos.",
+    preco: 44.90,
+    emoji: "🍕"
+  },
+  {
+    id: 5,
+    nome: "Batata frita",
+    descricao: "Porção de batatas crocantes.",
+    preco: 14.90,
+    emoji: "🍟"
+  },
+  {
+    id: 6,
+    nome: "Refrigerante",
+    descricao: "Lata gelada de 350 ml.",
+    preco: 6.00,
+    emoji: "🥤"
+  },
+  {
+    id: 7,
+    nome: "Coxinha",
+    descricao: "Salgado crocante de frango.",
+    preco: 7.00,
+    emoji: "🍗"
+  },
+  {
+    id: 8,
+    nome: "Suco de laranja",
+    descricao: "Bebida refrescante.",
+    preco: 8.50,
+    emoji: "🍊"
+  }
+];
+
+let carrinho = [];
+
+function dinheiro(valor) {
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+}
+
+function mostrarProdutos() {
+  const area = document.getElementById("produtos");
+
+  area.innerHTML = produtos.map(produto => `
+    <article class="produto">
+      <div class="emoji">${produto.emoji}</div>
+      <h3>${produto.nome}</h3>
+      <p>${produto.descricao}</p>
+      <p class="preco">${dinheiro(produto.preco)}</p>
+      <button type="button"
+        data-adicionar="${produto.id}">
+        Adicionar ao carrinho
+      </button>
+    </article>
+  `).join("");
+}
+
+function adicionar(id) {
+  const produto = produtos.find(p => p.id === id);
+  if (!produto) return;
+
+  const item = carrinho.find(p => p.id === id);
+
+  if (item) {
+    item.quantidade++;
+  } else {
+    carrinho.push({
+      ...produto,
+      quantidade: 1
+    });
+  }
+
+  mostrarCarrinho();
+}
+
+function alterarQuantidade(id, variacao) {
+  const item = carrinho.find(p => p.id === id);
+  if (!item) return;
+
+  item.quantidade += variacao;
+
+  if (item.quantidade <= 0) {
+    carrinho = carrinho.filter(p => p.id !== id);
+  }
+
+  mostrarCarrinho();
+}
+
+function mostrarCarrinho() {
+  const area = document.getElementById("itens-carrinho");
+
+  if (carrinho.length === 0) {
+    area.textContent = "Seu carrinho está vazio.";
+  } else {
+    area.innerHTML = carrinho.map(item => `
+      <div class="item-carrinho">
+        <span>
+          ${item.emoji} ${item.nome}<br>
+          ${item.quantidade} x ${dinheiro(item.preco)}
+        </span>
+        <div>
+          <button type="button"
+            data-alterar="${item.id}"
+            data-variacao="-1"
+            aria-label="Diminuir quantidade">−</button>
+          <button type="button"
+            data-alterar="${item.id}"
+            data-variacao="1"
+            aria-label="Aumentar quantidade">+</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  const total = carrinho.reduce(
+    (soma, item) => soma + item.preco * item.quantidade,
+    0
+  );
+
+  document.getElementById("total").textContent = dinheiro(total);
+}
+
+document.addEventListener("click", function(event) {
+  const adicionarBotao = event.target.closest("[data-adicionar]");
+  const alterarBotao = event.target.closest("[data-alterar]");
+
+  if (adicionarBotao) {
+    adicionar(Number(adicionarBotao.dataset.adicionar));
+  }
+
+  if (alterarBotao) {
+    alterarQuantidade(
+      Number(alterarBotao.dataset.alterar),
+      Number(alterarBotao.dataset.variacao)
+    );
+  }
+});
+
+document.getElementById("form-pedido").addEventListener(
+  "submit",
+  function(event) {
+    event.preventDefault();
+
+    if (carrinho.length === 0) {
+      alert("Adicione pelo menos um produto ao carrinho.");
+      return;
+    }
+
+    const nome = document.getElementById("nome").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const endereco = document.getElementById("endereco").value.trim();
+    const pagamento = document.getElementById("pagamento").value;
+
+    if (!nome || !telefone || !endereco || !pagamento) {
+      alert("Preencha todos os campos.");
+      return;
+    }
+
+    const total = carrinho.reduce(
+      (soma, item) => soma + item.preco * item.quantidade,
+      0
+    );
+
+    const linhas = carrinho.map(item =>
+      item.quantidade + "x " + item.nome +
+      " - " + dinheiro(item.preco * item.quantidade)
+    );
+
+    const pedido = [
+      "PEDIDO - FLOW-COMERCIO",
+      "----------------------",
+      ...linhas,
+      "----------------------",
+      "Total: " + dinheiro(total),
+      "",
+      "Nome: " + nome,
+      "Telefone: " + telefone,
+      "Endereço: " + endereco,
+      "Pagamento: " + pagamento
+    ].join("\n");
+
+    const arquivo = new Blob(
+      [pedido],
+      { type: "text/plain;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(arquivo);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "pedido-flow-comercio.txt";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    alert("Pedido gerado! Confira o arquivo baixado.");
+  }
+);
+
+mostrarProdutos();
+mostrarCarrinho();
+</script>
+
+</body>
+</html>
